@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:VetSucursales.ViewModels"
+             x:Class="VetSucursales.Views.SucursalDetailPage"
+             x:DataType="vm:SucursalDetailViewModel"
+             Title="Detalle de sucursal">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasError}"
+                   TextColor="Red" />
+
+            <VerticalStackLayout Spacing="14" IsVisible="{Binding HasSucursal}">
+
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Nombre" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    <Label Text="{Binding Sucursal.Nombre}" FontSize="20" FontAttributes="Bold" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Dirección" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    <Label Text="{Binding Sucursal.Direccion}" FontSize="16" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Teléfono" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    <Label Text="{Binding Sucursal.Telefono}" FontSize="16" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Horario de atención" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    <Label Text="{Binding Sucursal.HorarioAtencion}" FontSize="16" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Encargado" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    <Label Text="{Binding Sucursal.Encargado}" FontSize="16" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Descripción" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    <Label Text="{Binding Sucursal.Descripcion}" FontSize="16" />
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
+                    <Button Grid.Column="0" Text="Editar" Command="{Binding EditCommand}" />
+                    <Button Grid.Column="1"
+                            Text="Eliminar"
+                            Command="{Binding DeleteCommand}"
+                            BackgroundColor="#D32F2F" />
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

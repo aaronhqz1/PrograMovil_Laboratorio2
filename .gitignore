@@ -1,0 +1,81 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# .NET / MAUI specific
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.pubxml
+*.publishproj
+*.azurePubxml
+
+# Android
+*.apk
+*.aab
+*.ap_
+*.dex
+[Bb]uildOutput/
+local.properties
+
+# iOS / MacCatalyst
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+# Firebase / secrets — nunca versionar credenciales reales
+google-services.json
+GoogleService-Info.plist
+**/serviceAccountKey*.json
+*.pfx
+*.p12
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+*.swp
+*~

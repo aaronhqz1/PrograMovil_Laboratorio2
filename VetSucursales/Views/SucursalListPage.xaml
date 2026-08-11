@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:VetSucursales.ViewModels"
+             xmlns:models="clr-namespace:VetSucursales.Models"
+             x:Class="VetSucursales.Views.SucursalListPage"
+             x:DataType="vm:SucursalListViewModel"
+             Title="Sucursales">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <RefreshView Grid.Row="0"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding LoadCommand}">
+            <Grid>
+                <CollectionView ItemsSource="{Binding Sucursales}"
+                                SelectionMode="None"
+                                Margin="16,16,16,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Sucursal">
+                            <Border StrokeShape="RoundRectangle 12" Margin="0,0,0,12" Padding="16">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SucursalListViewModel}}, Path=SelectCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="18" />
+                                    <Label Text="{Binding Direccion}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                                    <Label Text="{Binding Telefono}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                                    <Label Text="{Binding Encargado, StringFormat='Encargado: {0}'}" FontSize="13" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="8"
+                                     Padding="32">
+                    <Label Text="No hay sucursales registradas."
+                           FontSize="16"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Toque &quot;Nueva sucursal&quot; para agregar la primera."
+                           FontSize="13"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+            </Grid>
+        </RefreshView>
+
+        <Label Grid.Row="0"
+               Text="{Binding ErrorMessage}"
+               IsVisible="{Binding HasError}"
+               TextColor="Red"
+               Margin="16"
+               VerticalOptions="Start" />
+
+        <Button Grid.Row="1"
+                Text="Nueva sucursal"
+                Command="{Binding AddCommand}"
+                Margin="16" />
+    </Grid>
+
+</ContentPage>

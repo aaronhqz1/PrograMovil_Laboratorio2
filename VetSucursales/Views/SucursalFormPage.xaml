@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:VetSucursales.ViewModels"
+             x:Class="VetSucursales.Views.SucursalFormPage"
+             x:DataType="vm:SucursalFormViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="6">
+
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasError}"
+                   TextColor="Red"
+                   Margin="0,0,0,8" />
+
+            <Label Text="Nombre *" FontAttributes="Bold" />
+            <Entry Text="{Binding Nombre}" Placeholder="Nombre de la sucursal" />
+            <Label Text="{Binding NombreError}" TextColor="Red" FontSize="12" IsVisible="{Binding NombreError, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Label Text="Dirección *" FontAttributes="Bold" Margin="0,10,0,0" />
+            <Entry Text="{Binding Direccion}" Placeholder="Dirección exacta" />
+            <Label Text="{Binding DireccionError}" TextColor="Red" FontSize="12" IsVisible="{Binding DireccionError, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Label Text="Teléfono *" FontAttributes="Bold" Margin="0,10,0,0" />
+            <Entry Text="{Binding Telefono}" Placeholder="Ej. 2222-2222" Keyboard="Telephone" />
+            <Label Text="{Binding TelefonoError}" TextColor="Red" FontSize="12" IsVisible="{Binding TelefonoError, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Label Text="Horario de atención *" FontAttributes="Bold" Margin="0,10,0,0" />
+            <Entry Text="{Binding HorarioAtencion}" Placeholder="Ej. Lunes a viernes 8:00 a.m. - 5:00 p.m." />
+            <Label Text="{Binding HorarioError}" TextColor="Red" FontSize="12" IsVisible="{Binding HorarioError, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Label Text="Encargado *" FontAttributes="Bold" Margin="0,10,0,0" />
+            <Entry Text="{Binding Encargado}" Placeholder="Nombre del encargado" />
+            <Label Text="{Binding EncargadoError}" TextColor="Red" FontSize="12" IsVisible="{Binding EncargadoError, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Label Text="Descripción *" FontAttributes="Bold" Margin="0,10,0,0" />
+            <Editor Text="{Binding Descripcion}" Placeholder="Servicios y detalles de la sucursal" AutoSize="TextChanges" MinimumHeightRequest="80" />
+            <Label Text="{Binding DescripcionError}" TextColor="Red" FontSize="12" IsVisible="{Binding DescripcionError, Converter={StaticResource StringToBoolConverter}}" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
+                <Button Grid.Column="0"
+                        Text="Cancelar"
+                        Command="{Binding CancelCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+                <Button Grid.Column="1"
+                        Text="Guardar"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Margin="0,10,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

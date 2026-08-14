@@ -6,24 +6,30 @@ public class Sucursal
 
     public string Nombre { get; set; } = string.Empty;
 
-    public string Direccion { get; set; } = string.Empty;
+    public Direccion Direccion { get; set; } = new();
 
     public string Telefono { get; set; } = string.Empty;
 
-    public string HorarioAtencion { get; set; } = string.Empty;
+    public List<HorarioDia> Horario { get; set; } = CrearHorarioSemanaVacio();
 
-    public string Encargado { get; set; } = string.Empty;
+    public Encargado Encargado { get; set; } = new();
 
     public string Descripcion { get; set; } = string.Empty;
+
+    /// <summary>Los 7 días de la semana en orden, todos "Cerrado" por defecto.</summary>
+    public static List<HorarioDia> CrearHorarioSemanaVacio() =>
+        Enum.GetValues<DiaSemana>()
+            .Select(dia => new HorarioDia { DiaSemana = dia, Estado = EstadoHorarioDia.Cerrado })
+            .ToList();
 
     public Sucursal Clone() => new()
     {
         Id = Id,
         Nombre = Nombre,
-        Direccion = Direccion,
+        Direccion = Direccion.Clone(),
         Telefono = Telefono,
-        HorarioAtencion = HorarioAtencion,
-        Encargado = Encargado,
+        Horario = Horario.Select(h => h.Clone()).ToList(),
+        Encargado = Encargado.Clone(),
         Descripcion = Descripcion
     };
 }

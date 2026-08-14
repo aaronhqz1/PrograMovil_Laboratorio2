@@ -46,7 +46,7 @@
 
                                         <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
                                             <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="17" LineBreakMode="TailTruncation" />
-                                            <Label Text="{Binding Direccion, StringFormat='&#128205; {0}'}" Style="{StaticResource CaptionLabel}" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Direccion, Converter={StaticResource DireccionFormatConverter}, StringFormat='&#128205; {0}'}" Style="{StaticResource CaptionLabel}" LineBreakMode="TailTruncation" />
                                             <Label Text="{Binding Telefono, StringFormat='&#128222; {0}'}" Style="{StaticResource CaptionLabel}" />
                                         </VerticalStackLayout>
 

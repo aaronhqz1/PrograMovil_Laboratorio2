@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:VetSucursales.ViewModels"
+             xmlns:helpers="clr-namespace:VetSucursales.Helpers"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="VetSucursales.Views.SucursalFormPage"
              x:DataType="vm:SucursalFormViewModel"
@@ -37,21 +38,83 @@
                 <Label Text="{Binding NombreError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding NombreError, Converter={StaticResource StringToBoolConverter}}" />
             </VerticalStackLayout>
 
+            <!-- ===== Dirección ===== -->
+
             <VerticalStackLayout Spacing="4">
-                <Label Text="Dirección *" Style="{StaticResource FieldLabel}" />
+                <Label Text="Dirección 1 *" Style="{StaticResource FieldLabel}" />
                 <Border Style="{StaticResource FieldBorder}">
                     <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding DireccionError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                        <DataTrigger TargetType="Border" Binding="{Binding Direccion1Error, Converter={StaticResource StringToBoolConverter}}" Value="True">
                             <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
                         </DataTrigger>
                     </Border.Triggers>
-                    <Entry Text="{Binding Direccion}" Placeholder="Dirección exacta">
+                    <Entry Text="{Binding Direccion1}" Placeholder="Calle, número, referencia principal">
                         <Entry.Behaviors>
                             <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
                         </Entry.Behaviors>
                     </Entry>
                 </Border>
-                <Label Text="{Binding DireccionError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding DireccionError, Converter={StaticResource StringToBoolConverter}}" />
+                <Label Text="{Binding Direccion1Error}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding Direccion1Error, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Dirección 2" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Entry Text="{Binding Direccion2}" Placeholder="Apartamento, local, referencia adicional (opcional)" />
+                </Border>
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Ciudad *" Style="{StaticResource FieldLabel}" />
+                    <Border Style="{StaticResource FieldBorder}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding CiudadError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                                <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Entry Text="{Binding Ciudad}" Placeholder="Ciudad">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label Text="{Binding CiudadError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding CiudadError, Converter={StaticResource StringToBoolConverter}}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="Estado/Provincia *" Style="{StaticResource FieldLabel}" />
+                    <Border Style="{StaticResource FieldBorder}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding EstadoProvinciaError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                                <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Entry Text="{Binding EstadoProvincia}" Placeholder="Estado/Provincia">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label Text="{Binding EstadoProvinciaError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EstadoProvinciaError, Converter={StaticResource StringToBoolConverter}}" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Código postal *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding CodigoPostalError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding CodigoPostal}" Placeholder="Ej. 10101">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding CodigoPostalError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding CodigoPostalError, Converter={StaticResource StringToBoolConverter}}" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="4">
@@ -71,38 +134,116 @@
                 <Label Text="{Binding TelefonoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding TelefonoError, Converter={StaticResource StringToBoolConverter}}" />
             </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="4">
-                <Label Text="Horario de atención *" Style="{StaticResource FieldLabel}" />
-                <Border Style="{StaticResource FieldBorder}">
+            <!-- ===== Horario de atención ===== -->
+
+            <VerticalStackLayout Spacing="6">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Horario de atención *" Style="{StaticResource FieldLabel}" VerticalOptions="Center" />
+                    <HorizontalStackLayout Grid.Column="1" Spacing="4" MinimumHeightRequest="44" MinimumWidthRequest="44"
+                                            SemanticProperties.Description="Editar horario de atención">
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding EditarHorarioCommand}" />
+                        </HorizontalStackLayout.GestureRecognizers>
+                        <Label Text="&#9998;" TextColor="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" FontSize="16" VerticalOptions="Center" />
+                        <Label Text="Editar horario" Style="{StaticResource LinkLabel}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Grid>
+
+                <Border Style="{StaticResource FieldBorder}" Padding="12,10">
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding HorarioError, Converter={StaticResource StringToBoolConverter}}" Value="True">
                             <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
                         </DataTrigger>
                     </Border.Triggers>
-                    <Entry Text="{Binding HorarioAtencion}" Placeholder="Ej. Lunes a viernes 8:00 a.m. - 5:00 p.m.">
-                        <Entry.Behaviors>
-                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
-                        </Entry.Behaviors>
-                    </Entry>
+                    <VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding HorarioResumen}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="helpers:HorarioResumenItem">
+                                <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="30">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SucursalFormViewModel}}, Path=EditarDiaCommand}"
+                                                               CommandParameter="{Binding Dia}" />
+                                    </Grid.GestureRecognizers>
+                                    <Label Grid.Column="0" Text="{Binding NombreDia}" FontAttributes="Bold" FontSize="13" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding Descripcion}" FontSize="13" HorizontalTextAlignment="End" VerticalOptions="Center"
+                                           Style="{StaticResource CaptionLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                 </Border>
                 <Label Text="{Binding HorarioError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding HorarioError, Converter={StaticResource StringToBoolConverter}}" />
             </VerticalStackLayout>
 
+            <!-- ===== Encargado ===== -->
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Nombre del encargado *" Style="{StaticResource FieldLabel}" />
+                    <Border Style="{StaticResource FieldBorder}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding EncargadoNombreError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                                <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Entry Text="{Binding EncargadoNombre}" Placeholder="Nombre">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label Text="{Binding EncargadoNombreError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EncargadoNombreError, Converter={StaticResource StringToBoolConverter}}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="Apellido del encargado *" Style="{StaticResource FieldLabel}" />
+                    <Border Style="{StaticResource FieldBorder}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding EncargadoApellidoError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                                <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Entry Text="{Binding EncargadoApellido}" Placeholder="Apellido">
+                            <Entry.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Border>
+                    <Label Text="{Binding EncargadoApellidoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EncargadoApellidoError, Converter={StaticResource StringToBoolConverter}}" />
+                </VerticalStackLayout>
+            </Grid>
+
             <VerticalStackLayout Spacing="4">
-                <Label Text="Encargado *" Style="{StaticResource FieldLabel}" />
+                <Label Text="Teléfono del encargado *" Style="{StaticResource FieldLabel}" />
                 <Border Style="{StaticResource FieldBorder}">
                     <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding EncargadoError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                        <DataTrigger TargetType="Border" Binding="{Binding EncargadoTelefonoError, Converter={StaticResource StringToBoolConverter}}" Value="True">
                             <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
                         </DataTrigger>
                     </Border.Triggers>
-                    <Entry Text="{Binding Encargado}" Placeholder="Nombre del encargado">
+                    <Entry Text="{Binding EncargadoTelefono}" Placeholder="Ej. 8888-8888" Keyboard="Telephone">
                         <Entry.Behaviors>
                             <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
                         </Entry.Behaviors>
                     </Entry>
                 </Border>
-                <Label Text="{Binding EncargadoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EncargadoError, Converter={StaticResource StringToBoolConverter}}" />
+                <Label Text="{Binding EncargadoTelefonoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EncargadoTelefonoError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Correo del encargado *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding EncargadoCorreoError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding EncargadoCorreo}" Placeholder="correo@ejemplo.com" Keyboard="Email">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding EncargadoCorreoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EncargadoCorreoError, Converter={StaticResource StringToBoolConverter}}" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="4">

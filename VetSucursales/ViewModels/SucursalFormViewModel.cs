@@ -190,8 +190,7 @@ public partial class SucursalFormViewModel : BaseViewModel
         if (dia is null)
             return Task.CompletedTask;
 
-        var diasConMismoHorario = Horario.Where(h => h.TieneMismoHorarioQue(dia)).Select(h => h.DiaSemana).ToList();
-        return AbrirModalHorarioAsync(diasConMismoHorario);
+        return AbrirModalHorarioAsync(new List<DiaSemana> { dia.DiaSemana });
     }
 
     private async Task AbrirModalHorarioAsync(List<DiaSemana>? preseleccion)

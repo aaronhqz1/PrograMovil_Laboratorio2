@@ -536,11 +536,12 @@
         <Setter Property="FontSize" Value="13" />
     </Style>
 
-    <!-- Círculo de día de la semana (modal de horario), estado sin seleccionar -->
+    <!-- Círculo de día de la semana (modal de horario), estado sin seleccionar. Tamaño reducido
+         a propósito para que los 7 círculos quepan en una sola fila sin necesidad de deslizar. -->
     <Style TargetType="Border" x:Key="DayCircleBorder">
-        <Setter Property="WidthRequest" Value="40" />
-        <Setter Property="HeightRequest" Value="40" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="WidthRequest" Value="34" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 17" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray500}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
@@ -549,7 +550,7 @@
 
     <Style TargetType="Label" x:Key="DayCircleLabel">
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="13" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray100}}" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="VerticalOptions" Value="Center" />

@@ -11,7 +11,7 @@
 
     <Grid Padding="20"
           RowSpacing="14"
-          WidthRequest="{OnIdiom Phone=300, Tablet=420, Default=320}"
+          WidthRequest="{OnIdiom Phone=320, Tablet=420, Default=340}"
           MaximumWidthRequest="480">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,34 +25,32 @@
 
         <Label Grid.Row="0" Text="Selecciona los días y el horario" Style="{StaticResource PageTitle}" FontSize="18" />
 
-        <ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
-            <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Dias}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="vm:DiaCircularSeleccionable">
-                        <Border Style="{StaticResource DayCircleBorder}"
-                                SemanticProperties.Description="{Binding Dia}">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBlueSurface}, Dark={StaticResource AccentBlueSurfaceDark}}" />
-                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" />
+        <HorizontalStackLayout Grid.Row="1" Spacing="4" HorizontalOptions="Center" BindableLayout.ItemsSource="{Binding Dias}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="vm:DiaCircularSeleccionable">
+                    <Border Style="{StaticResource DayCircleBorder}"
+                            SemanticProperties.Description="{Binding Dia}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBlueSurface}, Dark={StaticResource AccentBlueSurfaceDark}}" />
+                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HorarioEditorPopupViewModel}}, Path=ToggleDiaCommand}"
+                                                   CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Label Style="{StaticResource DayCircleLabel}" Text="{Binding Inicial}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" />
                                 </DataTrigger>
-                            </Border.Triggers>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HorarioEditorPopupViewModel}}, Path=ToggleDiaCommand}"
-                                                       CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
-                            <Label Style="{StaticResource DayCircleLabel}" Text="{Binding Inicial}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </Border>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </HorizontalStackLayout>
-        </ScrollView>
+                            </Label.Triggers>
+                        </Label>
+                    </Border>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </HorizontalStackLayout>
 
         <Label Grid.Row="2"
                Text="{Binding DiasError}"

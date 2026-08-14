@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using VetSucursales.Models;
@@ -82,6 +83,7 @@ public partial class SucursalDetailViewModel : BaseViewModel
             IsBusy = true;
             ErrorMessage = string.Empty;
             await _firestoreService.DeleteSucursalAsync(Sucursal.Id!);
+            await Toast.Make("Sucursal eliminada.").Show();
             await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)

@@ -7,61 +7,86 @@
              x:DataType="vm:SucursalListViewModel"
              Title="Sucursales">
 
-    <Grid RowDefinitions="*,Auto">
+    <Grid>
 
-        <RefreshView Grid.Row="0"
-                     IsRefreshing="{Binding IsBusy}"
+        <RefreshView IsRefreshing="{Binding IsBusy}"
                      Command="{Binding LoadCommand}">
-            <Grid>
-                <CollectionView ItemsSource="{Binding Sucursales}"
-                                SelectionMode="None"
-                                Margin="16,16,16,0">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Sucursal">
-                            <Border StrokeShape="RoundRectangle 12" Margin="0,0,0,12" Padding="16">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SucursalListViewModel}}, Path=SelectCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </Border.GestureRecognizers>
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="18" />
-                                    <Label Text="{Binding Direccion}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
-                                    <Label Text="{Binding Telefono}" FontSize="14" TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
-                                    <Label Text="{Binding Encargado, StringFormat='Encargado: {0}'}" FontSize="13" />
-                                </VerticalStackLayout>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+            <Grid RowDefinitions="Auto,*">
 
-                <VerticalStackLayout IsVisible="{Binding IsEmpty}"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center"
-                                     Spacing="8"
-                                     Padding="32">
-                    <Label Text="No hay sucursales registradas."
-                           FontSize="16"
-                           HorizontalTextAlignment="Center" />
-                    <Label Text="Toque &quot;Nueva sucursal&quot; para agregar la primera."
-                           FontSize="13"
-                           HorizontalTextAlignment="Center"
-                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
-                </VerticalStackLayout>
+                <Border Grid.Row="0"
+                        Style="{StaticResource ErrorBanner}"
+                        IsVisible="{Binding HasError}"
+                        Margin="16,16,16,0">
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="&#9888;" TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}" FontSize="16" VerticalOptions="Start" />
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                               FontSize="13"
+                               VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Grid Grid.Row="1">
+                    <CollectionView ItemsSource="{Binding Sucursales}"
+                                    SelectionMode="None"
+                                    Margin="16,16,16,96">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Sucursal">
+                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SucursalListViewModel}}, Path=SelectCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12"
+                                          SemanticProperties.Description="{Binding Nombre, StringFormat='Sucursal {0}. Toque para ver el detalle.'}">
+                                        <Border Grid.Column="0" Style="{StaticResource AvatarBorder}">
+                                            <Label Style="{StaticResource AvatarLabel}" Text="{Binding Nombre, Converter={StaticResource InitialConverter}}" />
+                                        </Border>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                            <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="17" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Direccion, StringFormat='&#128205; {0}'}" Style="{StaticResource CaptionLabel}" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Telefono, StringFormat='&#128222; {0}'}" Style="{StaticResource CaptionLabel}" />
+                                        </VerticalStackLayout>
+
+                                        <Label Grid.Column="2" Text="&#8250;" FontSize="22" VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray300}}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="Center"
+                                         Spacing="8"
+                                         Padding="32">
+                        <Label Text="&#127973;" FontSize="40" HorizontalTextAlignment="Center" />
+                        <Label Text="No hay sucursales registradas."
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Registre la primera sucursal para comenzar."
+                               Style="{StaticResource CaptionLabel}"
+                               HorizontalTextAlignment="Center" />
+                        <Button Text="Registrar sucursal"
+                                Command="{Binding AddCommand}"
+                                Margin="0,8,0,0" />
+                    </VerticalStackLayout>
+                </Grid>
             </Grid>
         </RefreshView>
 
-        <Label Grid.Row="0"
-               Text="{Binding ErrorMessage}"
-               IsVisible="{Binding HasError}"
-               TextColor="Red"
-               Margin="16"
-               VerticalOptions="Start" />
-
-        <Button Grid.Row="1"
-                Text="Nueva sucursal"
+        <Button Text="+"
+                Style="{StaticResource FabButton}"
                 Command="{Binding AddCommand}"
-                Margin="16" />
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,20,20"
+                SemanticProperties.Description="Agregar nueva sucursal" />
+
     </Grid>
 
 </ContentPage>

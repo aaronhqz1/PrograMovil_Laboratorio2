@@ -2,54 +2,138 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:VetSucursales.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="VetSucursales.Views.SucursalFormPage"
              x:DataType="vm:SucursalFormViewModel"
              Title="{Binding Title}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="6">
+        <VerticalStackLayout Padding="20" Spacing="18">
 
-            <Label Text="{Binding ErrorMessage}"
-                   IsVisible="{Binding HasError}"
-                   TextColor="Red"
-                   Margin="0,0,0,8" />
+            <Border Style="{StaticResource ErrorBanner}" IsVisible="{Binding HasError}">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="&#9888;" TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}" FontSize="16" VerticalOptions="Start" />
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="{AppThemeBinding Light={StaticResource Danger}, Dark={StaticResource DangerDark}}"
+                           FontSize="13"
+                           VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </Border>
 
-            <Label Text="Nombre *" FontAttributes="Bold" />
-            <Entry Text="{Binding Nombre}" Placeholder="Nombre de la sucursal" />
-            <Label Text="{Binding NombreError}" TextColor="Red" FontSize="12" IsVisible="{Binding NombreError, Converter={StaticResource StringToBoolConverter}}" />
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Nombre *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding NombreError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding Nombre}" Placeholder="Nombre de la sucursal">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding NombreError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding NombreError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
 
-            <Label Text="Dirección *" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Entry Text="{Binding Direccion}" Placeholder="Dirección exacta" />
-            <Label Text="{Binding DireccionError}" TextColor="Red" FontSize="12" IsVisible="{Binding DireccionError, Converter={StaticResource StringToBoolConverter}}" />
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Dirección *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding DireccionError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding Direccion}" Placeholder="Dirección exacta">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding DireccionError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding DireccionError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
 
-            <Label Text="Teléfono *" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Entry Text="{Binding Telefono}" Placeholder="Ej. 2222-2222" Keyboard="Telephone" />
-            <Label Text="{Binding TelefonoError}" TextColor="Red" FontSize="12" IsVisible="{Binding TelefonoError, Converter={StaticResource StringToBoolConverter}}" />
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Teléfono *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding TelefonoError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding Telefono}" Placeholder="Ej. 2222-2222" Keyboard="Telephone">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding TelefonoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding TelefonoError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
 
-            <Label Text="Horario de atención *" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Entry Text="{Binding HorarioAtencion}" Placeholder="Ej. Lunes a viernes 8:00 a.m. - 5:00 p.m." />
-            <Label Text="{Binding HorarioError}" TextColor="Red" FontSize="12" IsVisible="{Binding HorarioError, Converter={StaticResource StringToBoolConverter}}" />
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Horario de atención *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding HorarioError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding HorarioAtencion}" Placeholder="Ej. Lunes a viernes 8:00 a.m. - 5:00 p.m.">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding HorarioError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding HorarioError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
 
-            <Label Text="Encargado *" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Entry Text="{Binding Encargado}" Placeholder="Nombre del encargado" />
-            <Label Text="{Binding EncargadoError}" TextColor="Red" FontSize="12" IsVisible="{Binding EncargadoError, Converter={StaticResource StringToBoolConverter}}" />
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Encargado *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding EncargadoError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Entry Text="{Binding Encargado}" Placeholder="Nombre del encargado">
+                        <Entry.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+                <Label Text="{Binding EncargadoError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EncargadoError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
 
-            <Label Text="Descripción *" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Editor Text="{Binding Descripcion}" Placeholder="Servicios y detalles de la sucursal" AutoSize="TextChanges" MinimumHeightRequest="80" />
-            <Label Text="{Binding DescripcionError}" TextColor="Red" FontSize="12" IsVisible="{Binding DescripcionError, Converter={StaticResource StringToBoolConverter}}" />
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Descripción *" Style="{StaticResource FieldLabel}" />
+                <Border Style="{StaticResource FieldBorder}" Padding="12,10">
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding DescripcionError, Converter={StaticResource StringToBoolConverter}}" Value="True">
+                            <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                    <Editor Text="{Binding Descripcion}" Placeholder="Servicios y detalles de la sucursal" AutoSize="TextChanges" MinimumHeightRequest="80">
+                        <Editor.Behaviors>
+                            <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
+                        </Editor.Behaviors>
+                    </Editor>
+                </Border>
+                <Label Text="{Binding DescripcionError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding DescripcionError, Converter={StaticResource StringToBoolConverter}}" />
+            </VerticalStackLayout>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,10,0,0">
                 <Button Grid.Column="0"
                         Text="Cancelar"
-                        Command="{Binding CancelCommand}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding CancelCommand}" />
                 <Button Grid.Column="1"
                         Text="Guardar"
                         Command="{Binding SaveCommand}"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
             </Grid>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Margin="0,10,0,0" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
         </VerticalStackLayout>
     </ScrollView>

@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using VetSucursales.Services;
@@ -7,6 +9,10 @@ namespace VetSucursales.ViewModels;
 [QueryProperty(nameof(Id), "Id")]
 public partial class SucursalFormViewModel : BaseViewModel
 {
+    // Acepta dígitos, espacios, guiones, paréntesis y un "+" inicial opcional (formato flexible
+    // para números de Costa Rica u otros países), con al menos 8 dígitos en total.
+    private static readonly Regex TelefonoRegex = new(@"^\+?[0-9\s\-\(\)]{7,20}$", RegexOptions.Compiled);
+
     private readonly IFirestoreService _firestoreService;
 
     [ObservableProperty]
@@ -97,6 +103,12 @@ public partial class SucursalFormViewModel : BaseViewModel
         }
     }
 
+    /// <summary>Comando enlazado al evento Unfocused de cada campo (ver XAML) para validar en tiempo real.</summary>
+    [RelayCommand]
+    private void ValidateFields() => Validate();
+
+    /// <summary>Valida todos los campos y actualiza los mensajes de error inline. Se ejecuta tanto
+    /// al perder el foco de un campo (<see cref="ValidateFieldsCommand"/>) como al intentar guardar.</summary>
     private bool Validate()
     {
         NombreError = string.IsNullOrWhiteSpace(Nombre) ? "El nombre es obligatorio." : string.Empty;
@@ -109,9 +121,9 @@ public partial class SucursalFormViewModel : BaseViewModel
         {
             TelefonoError = "El teléfono es obligatorio.";
         }
-        else if (Telefono.Count(char.IsDigit) < 8)
+        else if (!TelefonoRegex.IsMatch(Telefono) || Telefono.Count(char.IsDigit) < 8)
         {
-            TelefonoError = "Ingrese un teléfono válido (mínimo 8 dígitos).";
+            TelefonoError = "Ingrese un teléfono válido (mínimo 8 dígitos; se permiten espacios, guiones y paréntesis).";
         }
         else
         {
@@ -156,6 +168,7 @@ public partial class SucursalFormViewModel : BaseViewModel
             else
                 await _firestoreService.AddSucursalAsync(sucursal);
 
+            await Toast.Make(IsEdit ? "Sucursal actualizada correctamente." : "Sucursal registrada correctamente.").Show();
             await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)

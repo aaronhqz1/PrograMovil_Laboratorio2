@@ -28,11 +28,11 @@ public static class DisplayFormatter
         return $"{hora12}:{hora.Minutes:D2} {ampm}";
     }
 
-    /// <summary>Ej. "11:00 a.m. - 10:30 p.m." o "Cerrado" o "Abierto las 24 horas".</summary>
+    /// <summary>Ej. "11:00 a.m. - 10:30 p.m." o "Cerrado" o "Abierto todo el día horas".</summary>
     public static string FormatearHorarioDia(HorarioDia dia) => dia.Estado switch
     {
         EstadoHorarioDia.Cerrado => "Cerrado",
-        EstadoHorarioDia.Abierto24h => "Abierto las 24 horas",
+        EstadoHorarioDia.Abierto24h => "Abierto todo el día",
         _ => dia.Rangos.Count == 0
             ? "Sin horario configurado"
             : string.Join(", ", dia.Rangos.Select(r => $"{FormatearHora(r.HoraInicio)} - {FormatearHora(r.HoraCierre)}"))

@@ -6,7 +6,7 @@ namespace VetSucursales.Services;
 /// </summary>
 public static class FirebaseConfig
 {
-    public const string ProjectId = "TU_FIREBASE_PROJECT_ID";
+    public const string ProjectId = "programovillaboratorio2";
 
     /// <summary>
     /// API Key web del proyecto (opcional). Firestore en modo de prueba no la exige,

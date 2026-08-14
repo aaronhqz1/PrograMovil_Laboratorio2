@@ -20,8 +20,8 @@ public partial class SucursalFormViewModel : BaseViewModel
     // para números de Costa Rica u otros países), con al menos 8 dígitos en total.
     private static readonly Regex TelefonoRegex = new(@"^\+?[0-9\s\-\(\)]{7,20}$", RegexOptions.Compiled);
 
-    // Código postal alfanumérico (cubre formatos como "10101" o "K1A 0B1").
-    private static readonly Regex CodigoPostalRegex = new(@"^[A-Za-z0-9\-\s]{3,10}$", RegexOptions.Compiled);
+    // Código postal: solo dígitos, máximo 5 (el Entry además limita la escritura con MaxLength).
+    private static readonly Regex CodigoPostalRegex = new(@"^[0-9]{1,5}$", RegexOptions.Compiled);
 
     private static readonly Regex CorreoRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
@@ -115,6 +115,12 @@ public partial class SucursalFormViewModel : BaseViewModel
     public bool IsEdit => !string.IsNullOrWhiteSpace(Id);
 
     public string Title => IsEdit ? "Editar sucursal" : "Registrar sucursal";
+
+    /// <summary>Las 7 provincias de Costa Rica, para el selector de Provincia del formulario.</summary>
+    public List<string> Provincias { get; } = new()
+    {
+        "San José", "Alajuela", "Cartago", "Heredia", "Guanacaste", "Puntarenas", "Limón"
+    };
 
     public SucursalFormViewModel(IFirestoreService firestoreService)
     {
@@ -241,7 +247,7 @@ public partial class SucursalFormViewModel : BaseViewModel
         if (string.IsNullOrWhiteSpace(CodigoPostal))
             CodigoPostalError = "El código postal es obligatorio.";
         else if (!CodigoPostalRegex.IsMatch(CodigoPostal))
-            CodigoPostalError = "Ingrese un código postal válido.";
+            CodigoPostalError = "Ingrese solo números (máximo 5 dígitos).";
         else
             CodigoPostalError = string.Empty;
 

@@ -83,18 +83,18 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Grid.Column="1" Spacing="4">
-                    <Label Text="Estado/Provincia *" Style="{StaticResource FieldLabel}" />
+                    <Label Text="Provincia *" Style="{StaticResource FieldLabel}" />
                     <Border Style="{StaticResource FieldBorder}">
                         <Border.Triggers>
                             <DataTrigger TargetType="Border" Binding="{Binding EstadoProvinciaError, Converter={StaticResource StringToBoolConverter}}" Value="True">
                                 <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
                             </DataTrigger>
                         </Border.Triggers>
-                        <Entry Text="{Binding EstadoProvincia}" Placeholder="Estado/Provincia">
-                            <Entry.Behaviors>
-                                <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
-                            </Entry.Behaviors>
-                        </Entry>
+                        <Picker ItemsSource="{Binding Provincias}" SelectedItem="{Binding EstadoProvincia}" Title="Selecciona una provincia">
+                            <Picker.Behaviors>
+                                <toolkit:EventToCommandBehavior EventName="SelectedIndexChanged" Command="{Binding ValidateFieldsCommand}" />
+                            </Picker.Behaviors>
+                        </Picker>
                     </Border>
                     <Label Text="{Binding EstadoProvinciaError}" Style="{StaticResource FieldErrorLabel}" IsVisible="{Binding EstadoProvinciaError, Converter={StaticResource StringToBoolConverter}}" />
                 </VerticalStackLayout>
@@ -108,7 +108,7 @@
                             <Setter Property="Stroke" Value="{StaticResource DangerBrush}" />
                         </DataTrigger>
                     </Border.Triggers>
-                    <Entry Text="{Binding CodigoPostal}" Placeholder="Ej. 10101">
+                    <Entry Text="{Binding CodigoPostal}" Placeholder="Ej. 10101" Keyboard="Numeric" MaxLength="5">
                         <Entry.Behaviors>
                             <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding ValidateFieldsCommand}" />
                         </Entry.Behaviors>

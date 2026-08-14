@@ -79,6 +79,20 @@
             </Grid>
         </RefreshView>
 
+        <Button Text="&#129514;"
+                Style="{StaticResource SecondaryButton}"
+                Command="{Binding SeedTestDataCommand}"
+                IsVisible="{Binding CanSeedTestData}"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                WidthRequest="48"
+                HeightRequest="48"
+                CornerRadius="24"
+                Padding="0"
+                FontSize="20"
+                Margin="0,0,24,88"
+                SemanticProperties.Description="Generar sucursales de prueba (solo en Debug)" />
+
         <Button Text="+"
                 Style="{StaticResource FabButton}"
                 Command="{Binding AddCommand}"

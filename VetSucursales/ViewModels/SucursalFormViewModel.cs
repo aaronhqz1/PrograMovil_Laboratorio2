@@ -117,10 +117,7 @@ public partial class SucursalFormViewModel : BaseViewModel
     public string Title => IsEdit ? "Editar sucursal" : "Registrar sucursal";
 
     /// <summary>Las 7 provincias de Costa Rica, para el selector de Provincia del formulario.</summary>
-    public List<string> Provincias { get; } = new()
-    {
-        "San José", "Alajuela", "Cartago", "Heredia", "Guanacaste", "Puntarenas", "Limón"
-    };
+    public IReadOnlyList<string> Provincias => CostaRicaProvincias.Todas;
 
     public SucursalFormViewModel(IFirestoreService firestoreService)
     {

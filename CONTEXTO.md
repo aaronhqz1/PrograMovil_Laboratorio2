@@ -18,6 +18,7 @@ Módulo completo de administración de sucursales de una clínica veterinaria, e
 - [x] Validaciones de campos obligatorios
 
 Campos mínimos por sucursal: Nombre, Dirección, Teléfono, Horario de atención, Encargado, Descripción.
+Desde el branch `RegistroSucursal` (14-ago-2026), Dirección, Horario de atención y Encargado dejaron de ser texto libre y pasaron a objetos estructurados — ver "Mejora de Registro de Sucursal" más abajo.
 
 ## Criterios de evaluación (100 pts)
 | Criterio | Puntos |
@@ -38,7 +39,7 @@ Campos mínimos por sucursal: Nombre, Dirección, Teléfono, Horario de atenció
 ## Estado de la implementación
 Proyecto `VetSucursales/` (.NET MAUI, targets: `net10.0-android`, `net10.0-windows10.0.19041.0`; se quitó iOS/MacCatalyst porque este entorno de desarrollo es Windows sin Mac de compilación).
 
-- `Models/Sucursal.cs` — modelo de datos (Id, Nombre, Dirección, Teléfono, HorarioAtencion, Encargado, Descripción) + `Clone()`.
+- `Models/Sucursal.cs` — modelo de datos (Id, Nombre, `Direccion` (objeto), Teléfono, `Horario` (`List<HorarioDia>`, 7 elementos), `Encargado` (objeto), Descripción) + `Clone()`. Detalle de estos objetos anidados en "Mejora de Registro de Sucursal".
 - `Services/FirebaseConfig.cs` — configurado con el proyecto real: `ProjectId = "programovillaboratorio2"`. `ApiKey` vacío (peticiones anónimas, ver reglas de Firestore en "Entregables").
 - `Services/IFirestoreService.cs` / `FirestoreService.cs` — servicio centralizado (inyectado por DI como singleton) con el CRUD completo contra la API REST de Firestore. Ningún ViewModel llama a Firestore directamente. No requiere `google-services.json` ni SDK nativo de Firebase.
 - `ViewModels/` — `SucursalListViewModel`, `SucursalFormViewModel` (registrar/editar), `SucursalDetailViewModel`. MVVM con `CommunityToolkit.Mvvm` (`ObservableObject`, `[ObservableProperty]`, `[RelayCommand]`). Manejo de errores con try/catch en toda operación de I/O, expuesto vía `BaseViewModel.ErrorMessage`/`HasError`.
@@ -63,11 +64,40 @@ Se revisó el módulo contra un checklist de 10 estándares de UI/UX y una lista
 - **Accesibilidad**: `SemanticProperties.Description` en el FAB y en cada tarjeta de la lista (para lectores de pantalla).
 - Limitación de tooling encontrada: el compilador XAML de este proyecto (`MauiXamlInflator=SourceGen` y también el XamlC clásico) no resuelve `BasedOn="{StaticResource {x:Type Button}}"` (error `Key must be a string literal` / `XC0009`). Los estilos `SecondaryButton`/`DangerButton`/`FabButton` repiten las propiedades base de `Button` en vez de heredar del estilo implícito.
 
+### Mejora de Registro de Sucursal (branch `RegistroSucursal`, 14-ago-2026)
+Se desglosaron los tres campos de texto libre más problemáticos del registro (Dirección, Horario de atención, Encargado) en objetos estructurados, persistidos como mapas/arreglos anidados en Firestore (no como strings concatenados), para poder filtrarlos/consultarlos por subcampo en el futuro.
+
+**Modelos nuevos** (`Models/`):
+- `Direccion` — `Direccion1` (obligatorio), `Direccion2` (opcional), `Ciudad`, `Estado`, `CodigoPostal` (obligatorios).
+- `Encargado` — `Nombre`, `Apellido`, `Telefono`, `Correo` (todos obligatorios) + `NombreCompleto` (computado).
+- `DiaSemana` (enum Lunes..Domingo), `EstadoHorarioDia` (enum Cerrado/Abierto24h/HorarioPersonalizado), `RangoHorario` (`HoraInicio`/`HoraCierre` como `TimeSpan`), `HorarioDia` (`DiaSemana` + `Estado` + `List<RangoHorario>`, para soportar horarios partidos como 8-12 y 2-6). `Sucursal.Horario` siempre tiene 7 elementos (uno por día).
+
+**Firestore** (`Services/FirestoreService.cs`): `direccion` y `encargado` se guardan como `mapValue`; `horario` como `arrayValue` de 7 `mapValue` (cada uno con `diaSemana`, `estado` como el nombre del enum, y `rangos` como `arrayValue` de `{horaInicio, horaCierre}` en formato `"HH:mm"`).
+
+**Retrocompatibilidad de lectura** (documentos guardados antes de este cambio, cuando `direccion`/`encargado`/`horarioAtencion` eran `stringValue` planos):
+- `direccion` string → se recupera completo en `Direccion.Direccion1` (los demás subcampos quedan vacíos). No se pierde el dato.
+- `encargado` string → se recupera completo en `Encargado.Nombre` (Apellido/Telefono/Correo quedan vacíos). No se pierde el dato.
+- `horarioAtencion` string (horario de toda la semana en un solo texto libre) → **no se puede descomponer automáticamente** en los 7 `HorarioDia`; el documento antiguo se lee con la semana en blanco (`Cerrado` los 7 días) y debe reingresarse manualmente desde el modal. Esto solo afecta al documento de prueba `La Prueba 1` sembrado antes de este branch.
+- La escritura (`AddSucursalAsync`/`UpdateSucursalAsync`) siempre guarda en el formato nuevo; un documento viejo migra automáticamente al formato nuevo la primera vez que se edita y guarda.
+
+**Modal de horario** (`Views/HorarioEditorPopup.xaml` + `.xaml.cs`, `ViewModels/HorarioEditorPopupViewModel.cs`, `ViewModels/DiaCircularSeleccionable.cs`, `ViewModels/RangoHorarioEditable.cs`, resultado `Helpers/HorarioSeleccion.cs`):
+- Usa `CommunityToolkit.Maui` **Popup v2** (`Popup<TResult>` + `CloseAsync(result)` en el code-behind, mostrado con `page.ShowPopupAsync<T>(popup, options, token)`) — el paquete ya estaba instalado e inicializado en el proyecto (v13.0.0), no fue necesario agregarlo. La API de Popup v2 de esta versión difiere de ejemplos más nuevos de la documentación oficial (`PopupOptions` vive en el namespace `CommunityToolkit.Maui`, no `CommunityToolkit.Maui.Views`); se verificó contra el `.xml` de intellisense del paquete instalado en el `.nuget` cache local en vez de asumir la doc más reciente.
+- Círculos de días con multi-selección (`ObservableCollection<DiaCircularSeleccionable>`), checkboxes "Abierto las 24 horas"/"Cerrado" mutuamente excluyentes, bloques Apertura/Cierre (`TimePicker` formato 12h) con soporte de horarios partidos vía "+ Agregar horario", validación de que el cierre sea posterior a la apertura por rango, y de que se haya seleccionado al menos un día.
+- Al tocar el ícono de lápiz "Editar horario" (una sola vez, para todo el bloque) se abre el modal sin preselección. Al tocar una fila específica del resumen (p. ej. "Jueves — Cerrado") se abre el modal preseleccionando **todos** los días que comparten exactamente el mismo horario que esa fila (`HorarioDia.TieneMismoHorarioQue`), para facilitar la edición masiva — probado manualmente: tocar un día en Cerrado preseleccionó los 4 días que aún estaban en Cerrado por defecto.
+- `SucursalFormViewModel` exige que el horario se haya guardado al menos una vez desde el modal (`HorarioError` = "Debe configurar el horario de atención.") antes de permitir Guardar; al cargar una sucursal existente para editar, se considera ya configurado.
+
+**Formato de visualización** (`Helpers/DisplayFormatter.cs`, `Helpers/HorarioResumenItem.cs`, `Converters/DireccionFormatConverter.cs`): nombres de día con acento correcto (Miércoles, Sábado) aunque el enum de C# no pueda llevarlos; horas en 12h minúsculas estilo "11:00 a.m. - 10:30 p.m."; dirección completa en una sola línea (listado y detalle) omitiendo subcampos vacíos.
+
+**Probado manualmente en el emulador Android** (`emulator-5554`) el flujo completo: registro con los 5 subcampos de dirección, horario configurado combinando 9:00 a.m.-5:00 p.m. (Lun-Mié) y "Abierto las 24 horas" (Jue-Dom) vía edición masiva por fila, datos completos del encargado, validación bloqueando "Guardar" hasta configurar el horario, guardado exitoso con Toast, listado mostrando la dirección formateada, detalle mostrando los 7 días y el encargado completo, y edición recargando correctamente todos los campos estructurados desde Firestore.
+
+**Colores nuevos** (`Resources/Styles/Colors.xaml`): `AccentBlue`/`AccentBlueDark`/`AccentBlueSurface`/`AccentBlueSurfaceDark` — azul "estilo Google Maps" para el selector de días del modal y los enlaces "Editar horario"/"Agregar horario", deliberadamente distinto del `Primary` morado de la app para igualar la referencia de diseño.
+
 ## Pendiente / próximos pasos
 1. Probar manualmente el flujo completo de validación (campo vacío al perder foco, teléfono inválido, Guardar con errores) en el emulador — se verificó navegación y renderizado visual, pero no cada combinación de validación.
 2. Grabar el video de demostración (5–8 min) mostrando las 5 operaciones CRUD + validaciones + feedback visual nuevo.
 3. Antes de entregar: revisar las reglas de Firestore antes del 12-sep-2026 (fecha de expiración del modo de prueba).
 4. Opcional (no bloqueante, mencionado como "opcional" en el checklist de UI/UX): swipe-to-delete en la lista con `SwipeView`, y una validación de ancho para tablets.
+5. Del branch `RegistroSucursal`: falta probar manualmente el caso de "horario partido" (dos rangos en el mismo día vía "+ Agregar horario") y la validación de cierre-antes-que-apertura dentro del modal; se verificó por code review y por el resto del flujo del modal, pero no ese caso puntual en el emulador. El documento `La Prueba 1` (formato viejo) quedó con la dirección/encargado recuperados como texto plano y el horario en blanco — reingresar su horario manualmente la próxima vez que se edite.
 
 ## Notas de diseño / decisiones tomadas
 - Se usó la API REST de Firestore con `HttpClient` (no el SDK gRPC de Google.Cloud.Firestore) por compatibilidad con Android/iOS en MAUI.

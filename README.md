@@ -4,7 +4,7 @@ Universidad Latina de Costa Rica · Programación Móvil
 
 Módulo completo para la administración de sucursales de una clínica veterinaria, desarrollado en **.NET MAUI** con persistencia en **Firebase Cloud Firestore**.
 
-Ver `Laboratorio_2_Modulo_Sucursales_Profesional.pdf` para el enunciado original y `CONTEXTO.md` para el estado/checklist del avance.
+Ver `Laboratorio_2_Modulo_Sucursales_Profesional.pdf` para el enunciado original.
 
 ## Funcionalidades
 
@@ -76,10 +76,3 @@ dotnet build -t:Run -f net10.0-windows10.0.19041.0    # ejecutar en Windows
 > Importante: `dotnet build` (sin `-t:Run`) solo compila; no instala ni lanza la app. Para Android, el emulador debe estar corriendo y visible en `adb devices` antes de ejecutar el comando de arriba, si no, la app compila pero nunca aparece en el dispositivo.
 
 También se puede abrir `VetSucursales.csproj` en Visual Studio y ejecutar con F5 seleccionando el destino deseado (Windows Machine o un emulador Android).
-
-## Entregables del laboratorio
-
-- [x] Proyecto completo (este repositorio)
-- [x] Código fuente funcional
-- [x] Base de datos en Firestore (proyecto `programovillaboratorio2` creado y configurado en `FirebaseConfig.cs`; verificar que las reglas sigan en modo de prueba/abierto — ver sección "Configurar Firebase")
-- [ ] Video de demostración (5–8 minutos)

@@ -27,11 +27,31 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <!-- Semantic tokens: keep every color decision (errors, cards, destructive actions) in one place
+         instead of hardcoding hex values inside pages. -->
+    <Color x:Key="Danger">#D32F2F</Color>
+    <Color x:Key="DangerDark">#EF5350</Color>
+    <Color x:Key="DangerSurface">#FDECEA</Color>
+    <Color x:Key="DangerSurfaceDark">#3A2222</Color>
+
+    <Color x:Key="CardBackground">#FFFFFF</Color>
+    <Color x:Key="CardBackgroundDark">#262626</Color>
+
+    <!-- Azul "estilo Google Maps" para el selector de días del modal de horario y los enlaces de
+         texto ("Editar horario", "Agregar horario") — deliberadamente distinto del Primary morado
+         de la app, para que el selector de días coincida con la referencia de diseño. -->
+    <Color x:Key="AccentBlue">#1A73E8</Color>
+    <Color x:Key="AccentBlueDark">#8AB4F8</Color>
+    <Color x:Key="AccentBlueSurface">#E8F0FE</Color>
+    <Color x:Key="AccentBlueSurfaceDark">#1F3A5F</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+    <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource Danger}"/>
+    <SolidColorBrush x:Key="AccentBlueBrush" Color="{StaticResource AccentBlue}"/>
 
     <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
     <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>

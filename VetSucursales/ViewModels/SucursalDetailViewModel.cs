@@ -1,5 +1,8 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using VetSucursales.Helpers;
 using VetSucursales.Models;
 using VetSucursales.Services;
 using VetSucursales.Views;
@@ -17,6 +20,9 @@ public partial class SucursalDetailViewModel : BaseViewModel
     [ObservableProperty]
     private Sucursal? sucursal;
 
+    [ObservableProperty]
+    private ObservableCollection<HorarioResumenItem> horarioResumen = new();
+
     public bool HasSucursal => Sucursal is not null;
 
     public SucursalDetailViewModel(IFirestoreService firestoreService)
@@ -24,7 +30,12 @@ public partial class SucursalDetailViewModel : BaseViewModel
         _firestoreService = firestoreService;
     }
 
-    partial void OnSucursalChanged(Sucursal? value) => OnPropertyChanged(nameof(HasSucursal));
+    partial void OnSucursalChanged(Sucursal? value)
+    {
+        OnPropertyChanged(nameof(HasSucursal));
+        HorarioResumen = new ObservableCollection<HorarioResumenItem>(
+            HorarioResumenItem.DesdeHorario(value?.Horario ?? new List<HorarioDia>()));
+    }
 
     partial void OnIdChanged(string? value)
     {
@@ -82,6 +93,7 @@ public partial class SucursalDetailViewModel : BaseViewModel
             IsBusy = true;
             ErrorMessage = string.Empty;
             await _firestoreService.DeleteSucursalAsync(Sucursal.Id!);
+            await Toast.Make("Sucursal eliminada.").Show();
             await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)

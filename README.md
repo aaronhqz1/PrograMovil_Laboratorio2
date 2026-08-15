@@ -53,8 +53,10 @@ VetSucursales/
    ```csharp
    public const string ProjectId = "TU_FIREBASE_PROJECT_ID";
    ```
-   por el Project ID real.
+   por el Project ID real. *(Ya hecho: `ProjectId = "programovillaboratorio2"`.)*
 5. La app crea la colección `sucursales` automáticamente al registrar la primera sucursal — no es necesario crearla manualmente.
+
+> Como no hay login/autenticación en la app, todas las peticiones a Firestore son anónimas (`FirebaseConfig.ApiKey` queda vacío). Si la base de datos se creó en **modo producción** en vez de modo de prueba, todas las operaciones fallarán con `403 PERMISSION_DENIED`. Verificar en Firestore → Reglas que exista `allow read, write: if true;` (o reglas equivalentes) para la colección `sucursales`.
 
 No se requiere descargar `google-services.json` ni instalar SDKs nativos de Firebase: la app habla directamente con la API REST de Firestore (`https://firestore.googleapis.com/v1/...`) mediante `HttpClient`, evitando problemas de compatibilidad de gRPC/AOT en Android e iOS.
 
@@ -67,9 +69,11 @@ No se requiere descargar `google-services.json` ni instalar SDKs nativos de Fire
 
 ```bash
 cd VetSucursales
-dotnet build -f net10.0-android            # o net10.0-windows10.0.19041.0
-dotnet build -t:Run -f net10.0-windows10.0.19041.0   # ejecutar en Windows
+dotnet build -t:Run -f net10.0-android               # instala y ejecuta en el emulador/dispositivo Android conectado
+dotnet build -t:Run -f net10.0-windows10.0.19041.0    # ejecutar en Windows
 ```
+
+> Importante: `dotnet build` (sin `-t:Run`) solo compila; no instala ni lanza la app. Para Android, el emulador debe estar corriendo y visible en `adb devices` antes de ejecutar el comando de arriba, si no, la app compila pero nunca aparece en el dispositivo.
 
 También se puede abrir `VetSucursales.csproj` en Visual Studio y ejecutar con F5 seleccionando el destino deseado (Windows Machine o un emulador Android).
 
@@ -77,5 +81,5 @@ También se puede abrir `VetSucursales.csproj` en Visual Studio y ejecutar con F
 
 - [x] Proyecto completo (este repositorio)
 - [x] Código fuente funcional
-- [ ] Base de datos en Firestore (crear el proyecto real siguiendo los pasos de arriba)
+- [x] Base de datos en Firestore (proyecto `programovillaboratorio2` creado y configurado en `FirebaseConfig.cs`; verificar que las reglas sigan en modo de prueba/abierto — ver sección "Configurar Firebase")
 - [ ] Video de demostración (5–8 minutos)

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:vm="clr-namespace:VetSucursales.ViewModels"
+               xmlns:helpers="clr-namespace:VetSucursales.Helpers"
+               x:Class="VetSucursales.Views.HorarioEditorPopup"
+               x:DataType="vm:HorarioEditorPopupViewModel"
+               x:TypeArguments="helpers:HorarioSeleccion"
+               BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}">
+
+    <Grid Padding="20"
+          RowSpacing="14"
+          WidthRequest="{OnIdiom Phone=320, Tablet=420, Default=340}"
+          MaximumWidthRequest="480">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Text="Selecciona los días y el horario" Style="{StaticResource PageTitle}" FontSize="18" />
+
+        <HorizontalStackLayout Grid.Row="1" Spacing="4" HorizontalOptions="Center" BindableLayout.ItemsSource="{Binding Dias}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="vm:DiaCircularSeleccionable">
+                    <Border Style="{StaticResource DayCircleBorder}"
+                            SemanticProperties.Description="{Binding Dia}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBlueSurface}, Dark={StaticResource AccentBlueSurfaceDark}}" />
+                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HorarioEditorPopupViewModel}}, Path=ToggleDiaCommand}"
+                                                   CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Label Style="{StaticResource DayCircleLabel}" Text="{Binding Inicial}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentBlue}, Dark={StaticResource AccentBlueDark}}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </Border>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </HorizontalStackLayout>
+
+        <Label Grid.Row="2"
+               Text="{Binding DiasError}"
+               Style="{StaticResource FieldErrorLabel}"
+               IsVisible="{Binding DiasError, Converter={StaticResource StringToBoolConverter}}" />
+
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <HorizontalStackLayout Grid.Column="0" Spacing="6">
+                <CheckBox IsChecked="{Binding Es24Horas}" />
+                <Label Text="Abierto todo el día" VerticalOptions="Center" FontSize="13" LineBreakMode="WordWrap" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                <CheckBox IsChecked="{Binding EsCerrado}" />
+                <Label Text="Cerrado" VerticalOptions="Center" FontSize="13" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="4"
+                              Spacing="10"
+                              IsVisible="{Binding MostrarBloqueHorario}"
+                              BindableLayout.ItemsSource="{Binding Rangos}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="vm:RangoHorarioEditable">
+                    <VerticalStackLayout Spacing="2">
+                        <Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="Apertura" Style="{StaticResource CaptionLabel}" />
+                                <TimePicker Time="{Binding Apertura}" Format="hh:mm tt" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Cierre" Style="{StaticResource CaptionLabel}" />
+                                <TimePicker Time="{Binding Cierre}" Format="hh:mm tt" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="2"
+                                    Text="&#10005;"
+                                    Style="{StaticResource RemoveRangoButton}"
+                                    VerticalOptions="End"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HorarioEditorPopupViewModel}}, Path=QuitarRangoCommand}"
+                                    CommandParameter="{Binding .}"
+                                    SemanticProperties.Description="Quitar este rango de horario" />
+                        </Grid>
+                        <Label Text="{Binding Error}"
+                               Style="{StaticResource FieldErrorLabel}"
+                               IsVisible="{Binding Error, Converter={StaticResource StringToBoolConverter}}" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </VerticalStackLayout>
+
+        <HorizontalStackLayout Grid.Row="5" IsVisible="{Binding MostrarBloqueHorario}" MinimumHeightRequest="44">
+            <HorizontalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AgregarHorarioCommand}" />
+            </HorizontalStackLayout.GestureRecognizers>
+            <Label Text="+ Agregar horario" Style="{StaticResource LinkLabel}" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <Grid Grid.Row="6" ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,6,0,0">
+            <Button Grid.Column="0" Text="Cancelar" Style="{StaticResource SecondaryButton}" Clicked="OnCancelarClicked" />
+            <Button Grid.Column="1" Text="Guardar" Clicked="OnGuardarClicked" />
+        </Grid>
+    </Grid>
+
+</toolkit:Popup>

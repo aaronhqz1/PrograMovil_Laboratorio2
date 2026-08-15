@@ -13,6 +13,8 @@
 
             <conv:StringToBoolConverter x:Key="StringToBoolConverter" />
             <conv:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <conv:InitialConverter x:Key="InitialConverter" />
+            <conv:DireccionFormatConverter x:Key="DireccionFormatConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
